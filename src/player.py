@@ -59,7 +59,7 @@ class Player:
         # if same playlists && idx --> same song :: pause/resume it
         self.datatype = datatype
 
-        if datatype == 'songs' or datatype == 'djchannels':
+        if datatype in ['songs', 'djchannels']:
             if idx == self.idx and songs == self.songs:
                 if self.pause_flag:
                     self.resume()
@@ -67,7 +67,7 @@ class Player:
                     self.pause()
 
             else:
-                if datatype == 'songs' or datatype == 'djchannels':
+                if datatype in ['songs', 'djchannels']:
                     self.songs = songs
                     self.idx = idx
 
@@ -78,15 +78,11 @@ class Player:
                 # start new play
                 else:
                     self.recall()
-        # if current menu is not song, pause/resume
-        else:
-            if self.playing_flag:
-                if self.pause_flag:
-                    self.resume()
-                else:
-                    self.pause()
+        elif self.playing_flag:
+            if self.pause_flag:
+                self.resume()
             else:
-                pass
+                self.pause()
 
     # play another   
     def switch(self):
