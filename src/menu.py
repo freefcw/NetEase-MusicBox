@@ -5,6 +5,7 @@
 网易云音乐 Menu
 '''
 
+
 import curses
 import locale
 import sys
@@ -17,8 +18,8 @@ from player import Player
 from ui import Ui
 
 home = os.path.expanduser("~")
-if os.path.isdir(home + '/netease-musicbox') is False:
-    os.mkdir(home+'/netease-musicbox')
+if os.path.isdir(f'{home}/netease-musicbox') is False:
+    os.mkdir(f'{home}/netease-musicbox')
 
 locale.setlocale(locale.LC_ALL, "")
 code = locale.getpreferredencoding()   
@@ -69,7 +70,7 @@ class Menu:
         self.userid = None
         self.username = None
         try:
-            sfile = file(home + "/netease-musicbox/flavor.json",'r')
+            sfile = file(f"{home}/netease-musicbox/flavor.json", 'r')
             data = json.loads(sfile.read())
             self.collection = data['collection']
             self.account = data['account']
@@ -97,15 +98,12 @@ class Menu:
             if key == ord('q'):
                 break
 
-            # 上移
             elif key == ord('k'):
                 self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx-1 )
 
-            # 下移
             elif key == ord('j'):
                 self.index = carousel(offset, min( len(datalist), offset + step) - 1, idx+1 )
 
-            # 向上翻页
             elif key == ord('u'):
                 if offset == 0:
                     continue
@@ -114,7 +112,6 @@ class Menu:
                 # e.g. 23 - 10 = 13 --> 10
                 self.index = (index-step)//step*step
 
-            # 向下翻页
             elif key == ord('d'):
                 if offset + step >= len( datalist ):
                     continue
@@ -123,16 +120,14 @@ class Menu:
                 # e.g. 23 + 10 = 33 --> 30
                 self.index = (index+step)//step*step
 
-            # 前进
-            elif key == ord('l') or key == 10:
-                if self.datatype == 'songs' or self.datatype == 'djchannels' or self.datatype == 'help':
+            elif key in [ord('l'), 10]:
+                if self.datatype in ['songs', 'djchannels', 'help']:
                     continue
                 self.ui.build_loading()
                 self.dispatch_enter(idx)
                 self.index = 0
                 self.offset = 0    
 
-            # 回退
             elif key == ord('h'):
                 # if not main menu
                 if len(self.stack) == 1:
@@ -144,30 +139,25 @@ class Menu:
                 self.offset = up[3]
                 self.index = up[4]
 
-            # 搜索
             elif key == ord('f'):
                 self.search()
 
-            # 播放下一曲
             elif key == ord(']'):
                 self.player.next()
                 time.sleep(0.1)
 
-            # 播放上一曲
             elif key == ord('['):
                 self.player.prev()
                 time.sleep(0.1)
 
-            # 播放、暂停
             elif key == ord(' '):
-                if datatype == 'songs':
-                    self.presentsongs = ['songs', title, datalist, offset, index]
-                elif datatype == 'djchannels':
+                if datatype == 'djchannels':
                     self.presentsongs = ['djchannels', title, datalist, offset, index]
+                elif datatype == 'songs':
+                    self.presentsongs = ['songs', title, datalist, offset, index]
                 self.player.play(datatype, datalist, idx)
                 time.sleep(0.1)
 
-            # 加载当前播放列表
             elif key == ord('p'):
                 if len(self.presentsongs) == 0:
                     continue
@@ -178,14 +168,9 @@ class Menu:
                 self.offset = self.presentsongs[3]
                 self.index = self.presentsongs[4]
 
-            # 添加到打碟歌单
             elif key == ord('a'):
                 if datatype == 'songs' and len(datalist) != 0:
                     self.djstack.append( datalist[idx] )
-                elif datatype == 'artists':
-                    pass
-
-            # 加载打碟歌单
             elif key == ord('z'):
                 self.stack.append( [datatype, title, datalist, offset, index] )
                 self.datatype = 'songs'
@@ -194,12 +179,10 @@ class Menu:
                 self.offset = 0
                 self.index = 0
 
-            # 添加到收藏歌曲
             elif key == ord('s'):
-                if (datatype == 'songs' or datatype == 'djchannels') and len(datalist) != 0:
+                if datatype in ['songs', 'djchannels'] and len(datalist) != 0:
                     self.collection.append( datalist[idx] )
 
-            # 加载收藏歌曲
             elif key == ord('c'):
                 self.stack.append( [datatype, title, datalist, offset, index] )
                 self.datatype = 'songs'
@@ -208,7 +191,6 @@ class Menu:
                 self.offset = 0
                 self.index = 0
 
-            # 从当前列表移除
             elif key == ord('r'):
                 if datatype != 'main' and len(datalist) != 0:
                     self.datalist.pop(idx)
@@ -231,7 +213,7 @@ class Menu:
 
 
         self.player.stop()
-        sfile = file(home + "/netease-musicbox/flavor.json", 'w')
+        sfile = file(f"{home}/netease-musicbox/flavor.json", 'w')
         data = {
             'account': self.account,
             'collection': self.collection
@@ -286,35 +268,31 @@ class Menu:
             self.title += ' > 排行榜'
             self.datatype = 'songs'
 
-        # 艺术家
         elif idx == 1:
             artists = netease.top_artists()
             self.datalist = netease.dig_info(artists, 'artists')
             self.title += ' > 艺术家'
             self.datatype = 'artists'
 
-        # 新碟上架
         elif idx == 2:
             albums = netease.new_albums()
             self.datalist = netease.dig_info(albums, 'albums')
             self.title += ' > 新碟上架'
             self.datatype = 'albums'
 
-        # 精选歌单
         elif idx == 3:
             playlists = netease.top_playlists()
             self.datalist = netease.dig_info(playlists, 'playlists')
             self.title += ' > 精选歌单'
             self.datatype = 'playlists'            
 
-        # 我的歌单
         elif idx == 4:
             # 未登录
             if self.userid is None:
                 # 使用本地存储了账户登录
                 if self.account:
                     user_info = netease.login(self.account[0], self.account[1])
-                    
+
                 # 本地没有存储账户，或本地账户失效，则引导录入
                 if self.account == {} or user_info['code'] != 200:
                     data = self.ui.build_login()
@@ -330,31 +308,26 @@ class Menu:
             myplaylist = netease.user_playlist( self.userid )
             self.datalist = netease.dig_info(myplaylist, 'playlists')
             self.datatype = 'playlists'
-            self.title += ' > ' + self.username + ' 的歌单'
+            self.title += f' > {self.username} 的歌单'
 
-        # DJ节目
         elif idx == 5:
             self.datatype = 'djchannels'
             self.title += ' > DJ节目'
             self.datalist = netease.djchannels()
 
-        # 打碟
         elif idx == 6:
             self.datatype = 'songs'
             self.title += ' > 打碟'
             self.datalist = self.djstack
 
-        # 收藏
         elif idx == 7:
             self.datatype = 'songs'
             self.title += ' > 收藏'
             self.datalist = self.collection
 
-        # 搜索
         elif idx == 8:
             self.search()
 
-        # 帮助
         elif idx == 9:
             self.datatype = 'help'
             self.title += ' > 帮助'

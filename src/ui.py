@@ -48,59 +48,145 @@ class Ui:
         if len(datalist) == 0:
             self.screen.addstr(8, 19, '这里什么都没有 -，-')
 
-        else:
-            if datatype == 'main':
-                for i in range( offset, min( len(datalist), offset+step) ):
-                    if i == index:
-                        self.screen.addstr(i - offset +8, 16, '-> ' + str(i) + '. ' + datalist[i], curses.color_pair(2))
-                    else:
-                        self.screen.addstr(i - offset +8, 19, str(i) + '. ' + datalist[i])
+        elif datatype == 'main':
+            for i in range( offset, min( len(datalist), offset+step) ):
+                if i == index:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        16,
+                        f'-> {str(i)}. {datalist[i]}',
+                        curses.color_pair(2),
+                    )
+                else:
+                    self.screen.addstr(i - offset +8, 19, f'{str(i)}. {datalist[i]}')
 
-            elif datatype == 'songs':
-                for i in range(offset, min( len(datalist), offset+step) ):
+        elif datatype == 'songs':
+            for i in range(offset, min( len(datalist), offset+step) ):
                     # this item is focus
-                    if i == index:
-                        self.screen.addstr(i - offset +8, 16, '-> ' + str(i) + '. ' + datalist[i]['song_name'] + '   -   ' + datalist[i]['artist'] + '  < ' + datalist[i]['album_name'] + ' >', curses.color_pair(2))
-                    else:
-                        self.screen.addstr(i - offset +8, 19, str(i) + '. ' + datalist[i]['song_name'] + '   -   ' + datalist[i]['artist'] + '  < ' + datalist[i]['album_name'] + ' >')
-            
-            elif datatype == 'artists':
-                for i in range(offset, min( len(datalist), offset+step) ):
-                    if i == index:
-                        self.screen.addstr(i - offset +8, 16, '-> ' + str(i) + '. ' + datalist[i]['artists_name'] + '   -   ' + str(datalist[i]['alias']), curses.color_pair(2))
-                    else:
-                        self.screen.addstr(i - offset +8, 19, str(i) + '. ' + datalist[i]['artists_name'] + '   -   ' + datalist[i]['alias'])
+                if i == index:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        16,
+                        f'-> {str(i)}. '
+                        + datalist[i]['song_name']
+                        + '   -   '
+                        + datalist[i]['artist']
+                        + '  < '
+                        + datalist[i]['album_name']
+                        + ' >',
+                        curses.color_pair(2),
+                    )
+                else:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        19,
+                        f'{str(i)}. '
+                        + datalist[i]['song_name']
+                        + '   -   '
+                        + datalist[i]['artist']
+                        + '  < '
+                        + datalist[i]['album_name']
+                        + ' >',
+                    )
 
-            elif datatype == 'albums':
-                for i in range(offset, min( len(datalist), offset+step) ):
-                    if i == index:
-                        self.screen.addstr(i - offset +8, 16, '-> ' + str(i) + '. ' + datalist[i]['albums_name'] + '   -   ' + datalist[i]['artists_name'], curses.color_pair(2))
-                    else:
-                        self.screen.addstr(i - offset +8, 19, str(i) + '. ' + datalist[i]['albums_name'] + '   -   ' + datalist[i]['artists_name'])
+        elif datatype == 'artists':
+            for i in range(offset, min( len(datalist), offset+step) ):
+                if i == index:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        16,
+                        f'-> {str(i)}. '
+                        + datalist[i]['artists_name']
+                        + '   -   '
+                        + str(datalist[i]['alias']),
+                        curses.color_pair(2),
+                    )
+                else:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        19,
+                        f'{str(i)}. '
+                        + datalist[i]['artists_name']
+                        + '   -   '
+                        + datalist[i]['alias'],
+                    )
 
-            elif datatype == 'playlists':
-                for i in range(offset, min( len(datalist), offset+step) ):
-                    if i == index:
-                        self.screen.addstr(i - offset +8, 16, '-> ' + str(i) + '. ' + datalist[i]['playlists_name'] + '   -   ' + datalist[i]['creator_name'], curses.color_pair(2))
-                    else:
-                        self.screen.addstr(i - offset +8, 19, str(i) + '. ' + datalist[i]['playlists_name'] + '   -   ' + datalist[i]['creator_name'])
+        elif datatype == 'albums':
+            for i in range(offset, min( len(datalist), offset+step) ):
+                if i == index:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        16,
+                        f'-> {str(i)}. '
+                        + datalist[i]['albums_name']
+                        + '   -   '
+                        + datalist[i]['artists_name'],
+                        curses.color_pair(2),
+                    )
+                else:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        19,
+                        f'{str(i)}. '
+                        + datalist[i]['albums_name']
+                        + '   -   '
+                        + datalist[i]['artists_name'],
+                    )
 
-            elif datatype == 'djchannels':
-                for i in range(offset, min( len(datalist), offset+step) ):
-                    if i == index:
-                        self.screen.addstr(i - offset +8, 16, '-> ' + str(i) + '. ' + datalist[i]['song_name'], curses.color_pair(2))
-                    else:
-                        self.screen.addstr(i - offset +8, 19, str(i) + '. ' + datalist[i]['song_name'])                
+        elif datatype == 'playlists':
+            for i in range(offset, min( len(datalist), offset+step) ):
+                if i == index:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        16,
+                        f'-> {str(i)}. '
+                        + datalist[i]['playlists_name']
+                        + '   -   '
+                        + datalist[i]['creator_name'],
+                        curses.color_pair(2),
+                    )
+                else:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        19,
+                        f'{str(i)}. '
+                        + datalist[i]['playlists_name']
+                        + '   -   '
+                        + datalist[i]['creator_name'],
+                    )
 
-            elif datatype == 'help':
-                for i in range(offset, min( len(datalist), offset+step) ):
-                    if i == index:
-                        self.screen.addstr(i - offset +8, 16, '-> ' + str(i) + '. \'' + datalist[i][0].upper() + '\'   ' + datalist[i][1] + '   ' + datalist[i][2], curses.color_pair(2))
-                    else:
-                        self.screen.addstr(i - offset +8, 19, str(i) + '. \'' + datalist[i][0].upper() + '\'   ' + datalist[i][1] + '   ' + datalist[i][2])                
-                self.screen.addstr(20, 6, 'NetEase-MusicBox 基于Python，所有版权音乐来源于网易，本地不做任何保存')
-                self.screen.addstr(21, 10, '按 [G] 到 Github 了解更多信息，帮助改进，或者Star表示支持~~')
-                self.screen.addstr(22, 19, 'Build with love to music by @vellow')
+        elif datatype == 'djchannels':
+            for i in range(offset, min( len(datalist), offset+step) ):
+                if i == index:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        16,
+                        f'-> {str(i)}. ' + datalist[i]['song_name'],
+                        curses.color_pair(2),
+                    )
+                else:
+                    self.screen.addstr(i - offset +8, 19, f'{str(i)}. ' + datalist[i]['song_name'])                
+
+        elif datatype == 'help':
+            for i in range(offset, min( len(datalist), offset+step) ):
+                if i == index:
+                    self.screen.addstr(
+                        i - offset + 8,
+                        16,
+                        f'-> {str(i)}'
+                        + '. \''
+                        + datalist[i][0].upper()
+                        + '\'   '
+                        + datalist[i][1]
+                        + '   '
+                        + datalist[i][2],
+                        curses.color_pair(2),
+                    )
+                else:
+                    self.screen.addstr(i - offset +8, 19, str(i) + '. \'' + datalist[i][0].upper() + '\'   ' + datalist[i][1] + '   ' + datalist[i][2])
+            self.screen.addstr(20, 6, 'NetEase-MusicBox 基于Python，所有版权音乐来源于网易，本地不做任何保存')
+            self.screen.addstr(21, 10, '按 [G] 到 Github 了解更多信息，帮助改进，或者Star表示支持~~')
+            self.screen.addstr(22, 19, 'Build with love to music by @vellow')
 
         self.screen.refresh()    
 
@@ -160,15 +246,14 @@ class Ui:
     def build_search_menu(self):
         self.screen.move(4,1)
         self.screen.clrtobot()
-    	self.screen.addstr(8, 19, '选择搜索类型:', curses.color_pair(1))
-    	self.screen.addstr(10,19, '[1] 歌曲')
-    	self.screen.addstr(11,19, '[2] 艺术家')
-    	self.screen.addstr(12,19, '[3] 专辑')
-    	self.screen.addstr(13,19, '[4] 网易精选集')
-    	self.screen.addstr(16,19, '请键入对应数字:', curses.color_pair(2))
-    	self.screen.refresh()
-    	x = self.screen.getch()
-    	return x
+        self.screen.addstr(8, 19, '选择搜索类型:', curses.color_pair(1))
+        self.screen.addstr(10,19, '[1] 歌曲')
+        self.screen.addstr(11,19, '[2] 艺术家')
+        self.screen.addstr(12,19, '[3] 专辑')
+        self.screen.addstr(13,19, '[4] 网易精选集')
+        self.screen.addstr(16,19, '请键入对应数字:', curses.color_pair(2))
+        self.screen.refresh()
+        return self.screen.getch()
 
     def build_login(self):
         info = self.get_param('请输入登录信息， e.g: john@163.com 123456')
@@ -176,14 +261,10 @@ class Ui:
         if len(account) != 2:
             return self.build_login()
         login_info = self.netease.login(account[0], account[1])
-        if login_info['code'] != 200:
-            x = self.build_login_error()
-            if x == ord('1'):
-               return self.build_login()
-            else:
-                return -1
-        else:
-            return [login_info, account]        
+        if login_info['code'] == 200:
+            return [login_info, account]
+        x = self.build_login_error()
+        return self.build_login() if x == ord('1') else -1        
 
     def build_login_error(self):
         self.screen.move(4,1)
@@ -193,8 +274,7 @@ class Ui:
         self.screen.addstr(11,19, '[2] 稍后再试')
         self.screen.addstr(14,19, '请键入对应数字:', curses.color_pair(2))
         self.screen.refresh()
-        x = self.screen.getch()
-        return x
+        return self.screen.getch()
 
     def get_param(self, prompt_string):
   		# keep playing info in line 1    	
@@ -203,7 +283,4 @@ class Ui:
         self.screen.addstr(5, 19, prompt_string, curses.color_pair(1))
         self.screen.refresh()
         info = self.screen.getstr(10, 19, 60)
-        if info.strip() is '':
-            return self.get_param(prompt_string)
-        else:
-            return info
+        return self.get_param(prompt_string) if info.strip() is '' else info
